@@ -27,12 +27,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     nodo.cpp \
     mariosmart.cpp \
-    archivo.cpp
+    archivo.cpp \
+    busqueda.cpp
 
 HEADERS  += mainwindow.h \
     ../Mario-Smart537/nodo.h \
     mariosmart.h \
     nodo.h \
-    archivo.h
+    archivo.h \
+    busqueda.h
 
 FORMS    += mainwindow.ui
