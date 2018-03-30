@@ -24,8 +24,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    nodo.cpp \
+    mariosmart.cpp \
+    archivo.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    ../Mario-Smart537/nodo.h \
+    mariosmart.h \
+    nodo.h \
+    archivo.h
 
 FORMS    += mainwindow.ui
