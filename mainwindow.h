@@ -1,3 +1,10 @@
+/**
+ * @authors
+ * Melissa Millares
+ * Felipe Montoya
+ * Victor Hugo Ortega Gomez
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
