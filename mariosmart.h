@@ -12,8 +12,9 @@ class MarioSmart
 {
 public:
     MarioSmart();
-    bool esObjetivo();
+    bool esObjetivo(int[]);
     void acciones();
+    bool canMove();
     int costeAccion();
 
 private:

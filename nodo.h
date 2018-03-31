@@ -15,14 +15,20 @@ class Nodo
 {
 public:
     Nodo();
-    Nodo crearNodo();
-    void expandirNodo();
+    Nodo(int estado[]);
+    Nodo(Nodo nodo, string accion);
+
+    void determinarEstado(int estado[], string accion);
+
+    int getCoste();
+    int *getEstado();
 
 private:
     string accion;
     int coste;
     int estado[];
-    Nodo padre;
+    int *punteroEstado;
+    Nodo *padre;
 
 };
 
