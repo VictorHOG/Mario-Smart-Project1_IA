@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QFile>
 #include <vector>
+#include <QTimer>
 
 using namespace std;
 
@@ -15,6 +16,10 @@ public:
     Interfaz(QString path);
     vector< vector<int> > leerArchivo(QString filePath);
     void dibujarTablero(vector< vector<int> > lista);
+    void dibujarCamino(string path, int filas, int columnas);
+
+private:
+    QTimer timer;
 };
 
 #endif // INTERFAZ_H

@@ -8,12 +8,12 @@
 #include <QTextStream>
 #include <vector>
 #include <iostream>
+#include <QTimer>
 
 using namespace std;
 
 Interfaz::Interfaz(QString path) {
     vector< vector<int> > listaAux;
-
     listaAux = leerArchivo(path);
 
     dibujarTablero(listaAux);
@@ -30,7 +30,7 @@ void Interfaz::dibujarTablero(vector< vector<int> > lista) {
     QPixmap flor("../Images/flor.png");
     QPixmap tortuga("../Images/tortuga.png");
 
-    QLabel *img = new QLabel(this);
+//    QLabel *img = new QLabel(this);
     QLabel *imgPrincesa = new QLabel(this);        
     QLabel *imgNull = new QLabel(this);        
 
@@ -40,10 +40,10 @@ void Interfaz::dibujarTablero(vector< vector<int> > lista) {
     this->setFixedHeight(700);
 
     // agregar las imagenes a los labels
-    img->setPixmap(mario);    
+//    img->setPixmap(mario);
     imgPrincesa->setPixmap(princesa);                
 
-    img->setVisible(false);    
+    //img->setVisible(false);
     imgPrincesa->setVisible(false);
     imgNull->setVisible(false);
 
@@ -57,9 +57,11 @@ void Interfaz::dibujarTablero(vector< vector<int> > lista) {
                 QLabel *imgLadrillo = new QLabel(this);
                 imgLadrillo->setPixmap(ladrillo);                
                 layout->addWidget(imgLadrillo, j, i, Qt::AlignHCenter);
-                imgLadrillo->setVisible(true);
+                imgLadrillo->setVisible(true);                
             } else if (lista[i][j] == 2) {
                 // 2 si es el punto donde inicia Mario
+                QLabel *img = new QLabel(this);
+                img->setPixmap(mario);
                 layout->addWidget(img, j, i, Qt::AlignHCenter);
                 img->setVisible(true);
             } else if (lista[i][j] == 3) {
@@ -85,7 +87,28 @@ void Interfaz::dibujarTablero(vector< vector<int> > lista) {
         }
     }
 
+    timer.start(1000);
+    QLabel *img = new QLabel(this);
+    img->setPixmap(mario);
+    layout->addWidget(img, 4, 0, Qt::AlignHCenter);
+    img->setVisible(true);
+    timer.stop();
+
     this->setLayout(layout);
+}
+
+void Interfaz::dibujarCamino(string path, int filas, int columnas) {
+
+//    for (int j = 0; (unsigned) j < filas; j++) {
+//         for (int i = 0; (unsigned) i < columnas; i++) {
+             timer.start(1000);
+             qDebug()<<"cambiar la pos de mario";
+             //img->setVisible(false);
+ //            layout->addWidget(img, 0, 0, Qt::AlignHCenter);
+ //            img->setVisible(true);
+             timer.stop();
+//         }
+//     }
 }
 
 vector< vector<int> > Interfaz::leerArchivo(QString filePath) {
