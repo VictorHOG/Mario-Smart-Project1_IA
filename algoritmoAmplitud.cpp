@@ -15,13 +15,13 @@ using namespace std;
 
 struct nodo{
     int posX, posY;
-    int costo;
+    int costo, costoAux;
     int profundidad;
     bool flor;
     nodo * padre;
 
     nodo(){
-	costo = profundidad = posX = posY = 0;
+	costo = profundidad = posX = posY = costoAux = 0;
     	flor = false;
     	padre = NULL;
     }
@@ -350,9 +350,227 @@ void costoUniforme(vector< vector<int> > tablero, vector< vector<int> > nodosVis
     }
 }
 
+void avara(vector< vector<int> > tablero, vector< vector<int> > nodosVisitados,
+                int filas, int columnas, int xInicial, int yInicial, int xFinal, int yFinal){
+    clock_t tiempo = clock();
+    int nodosExpandidos, profundidadDelArbol;
+    nodosExpandidos = profundidadDelArbol = 0;
+    priority_queue<nodo> colaDePrioridad;
+    nodo inicial;
+    inicial.posX = xInicial;
+    inicial.posY = yInicial;
+    inicial.costo = abs(xInicial - xFinal) + abs(yInicial - yFinal);
+    colaDePrioridad.push(inicial);
+    nodosVisitados[xInicial][yInicial] = 1;
+    nodosExpandidos++;
+    while(!colaDePrioridad.empty()){
+        nodo aExpandir = colaDePrioridad.top();
+        profundidadDelArbol = max(profundidadDelArbol,aExpandir.profundidad);
+        int xNodo, yNodo;
+        xNodo = aExpandir.posX;
+        yNodo = aExpandir.posY;
+        if(tablero[xNodo][yNodo] == PEACH){
+            break;
+        }
+        if(tablero[xNodo][yNodo] == FLOR){
+            aExpandir.flor = true;
+        }
+        colaDePrioridad.pop();
+        if(xNodo-1 >= 0 && tablero[xNodo-1][yNodo] != MURO &&
+                nodosVisitados[xNodo-1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo-1][yNodo] != 3){
+            nodosVisitados[xNodo-1][yNodo] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo-1;
+            hijo.posY = yNodo;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal);
+            hijo.flor = aExpandir.flor;
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+
+        if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  &&
+                nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
+            nodosVisitados[xNodo+1][yNodo] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo+1;
+            hijo.posY = yNodo;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.flor = aExpandir.flor;
+            hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal);
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+        if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  &&
+				nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
+			nodosVisitados[xNodo][yNodo-1] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo;
+            hijo.posY = yNodo-1;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.flor = aExpandir.flor;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal);;
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+        if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  &&
+                nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
+            nodosVisitados[xNodo][yNodo+1] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo;
+            hijo.posY = yNodo+1;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal);;
+            hijo.flor = aExpandir.flor;
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+    }
+    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
+    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
+    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    if(colaDePrioridad.size() > 0){
+        printf("La princesa fue rescatada, el costo de la solucion es %d\n", colaDePrioridad.top().costo);
+        printf("La solución al camino fue:\n");
+        nodo solucion = colaDePrioridad.top();
+        printPath(&solucion);
+    }else{
+        printf("La princesa no fue rescatada\n");
+    }
+}
+
+void aEstrella(vector< vector<int> > tablero, vector< vector<int> > nodosVisitados,
+                int filas, int columnas, int xInicial, int yInicial, int xFinal, int yFinal){
+    clock_t tiempo = clock();
+    int nodosExpandidos, profundidadDelArbol;
+    nodosExpandidos = profundidadDelArbol = 0;
+    priority_queue<nodo> colaDePrioridad;
+    nodo inicial;
+    inicial.posX = xInicial;
+    inicial.posY = yInicial;
+    inicial.costo = abs(xInicial - xFinal) + abs(yInicial - yFinal);
+    colaDePrioridad.push(inicial);
+    nodosVisitados[xInicial][yInicial] = 1;
+    nodosExpandidos++;
+    while(!colaDePrioridad.empty()){
+        nodo aExpandir = colaDePrioridad.top();
+        profundidadDelArbol = max(profundidadDelArbol,aExpandir.profundidad);
+        int xNodo, yNodo;
+        xNodo = aExpandir.posX;
+        yNodo = aExpandir.posY;
+        if(tablero[xNodo][yNodo] == PEACH){
+            break;
+        }
+        if(tablero[xNodo][yNodo] == FLOR){
+            aExpandir.flor = true;
+        }
+        colaDePrioridad.pop();
+        if(xNodo-1 >= 0 && tablero[xNodo-1][yNodo] != MURO &&
+                nodosVisitados[xNodo-1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo-1][yNodo] != 3){
+            nodosVisitados[xNodo-1][yNodo] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo-1;
+            hijo.posY = yNodo;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal) + aExpandir.costoAux;
+            hijo.costoAux = aExpandir.costoAux +1;
+            hijo.flor = aExpandir.flor;
+
+            if(tablero[xNodo-1][yNodo] == TORTUGA && hijo.flor == false){
+
+                            hijo.costoAux += 7;
+            }
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+
+        if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  &&
+                nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
+            nodosVisitados[xNodo+1][yNodo] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo+1;
+            hijo.posY = yNodo;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.flor = aExpandir.flor;
+            hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal) +aExpandir.costoAux;
+            hijo.costoAux = aExpandir.costoAux +1;
+
+            if(tablero[xNodo-1][yNodo] == TORTUGA && hijo.flor == false){
+
+                            hijo.costoAux += 7;
+            }
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+        if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  &&
+				nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
+			nodosVisitados[xNodo][yNodo-1] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo;
+            hijo.posY = yNodo-1;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.flor = aExpandir.flor;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal)+aExpandir.costoAux;
+            hijo.costoAux = aExpandir.costoAux +1;
+
+            if(tablero[xNodo-1][yNodo] == TORTUGA && hijo.flor == false){
+
+                            hijo.costoAux += 7;
+            }
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+        if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  &&
+                nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
+            nodosVisitados[xNodo][yNodo+1] += aExpandir.flor + 1;
+            nodo hijo;
+            hijo.posX = xNodo;
+            hijo.posY = yNodo+1;
+            hijo.padre = new nodo(aExpandir);
+            hijo.profundidad = aExpandir.profundidad + 1;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal) + aExpandir.costoAux;
+            hijo.costoAux = aExpandir.costoAux +1;
+            hijo.flor = aExpandir.flor;
+
+            if(tablero[xNodo-1][yNodo] == TORTUGA && hijo.flor == false){
+
+                            hijo.costoAux += 7;
+            }
+
+            nodosExpandidos++;
+            colaDePrioridad.push(hijo);
+        }
+    }
+    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
+    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
+    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    if(colaDePrioridad.size() > 0){
+        printf("La princesa fue rescatada, el costo de la solucion es %d\n", colaDePrioridad.top().costo);
+        printf("La solución al camino fue:\n");
+        nodo solucion = colaDePrioridad.top();
+        printPath(&solucion);
+    }else{
+        printf("La princesa no fue rescatada\n");
+    }
+}
+
 int main(int argc, char** argv) {
-    freopen("Prueba2.txt","r",stdin);
-    int filas, columnas, xInicial, yInicial;
+    freopen("Prueba1.txt","r",stdin);
+    int filas, columnas, xInicial, yInicial, xFinal, yFinal;
     scanf("%d %d", &filas, &columnas);
     vector< vector<int> > tablero, nodosVisitados;
     tablero.assign(filas, vector<int>(columnas));
@@ -365,6 +583,11 @@ int main(int argc, char** argv) {
                 xInicial = i;
                 yInicial = j;
             }
+
+            if(tablero[i][j] == PEACH){
+                xFinal = i;
+                yFinal = j;
+            }
         }
     }
     for(int i = 0; i < filas; i++){
@@ -375,6 +598,8 @@ int main(int argc, char** argv) {
     }
     amplitud(tablero,nodosVisitados,filas,columnas,xInicial,yInicial);
     costoUniforme(tablero,nodosVisitados,filas,columnas,xInicial,yInicial);
-    profundidadSinCiclo(tablero,nodosVisitados,filas,columnas,xInicial,yInicial); 
+    profundidadSinCiclo(tablero,nodosVisitados,filas,columnas,xInicial,yInicial);
+    avara(tablero,nodosVisitados,filas,columnas,xInicial,yInicial, xFinal, yFinal);
+    aEstrella(tablero,nodosVisitados,filas,columnas,xInicial,yInicial, xFinal, yFinal);
     return 0;
 }
