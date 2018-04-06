@@ -1,49 +1,22 @@
-/**
- * @authors
- * Melissa Millares
- * Felipe Montoya
- * Victor Hugo Ortega Gomez
- */
-
 #include "nodo.h"
 
-Nodo::Nodo(){
-
-}
-
-Nodo::Nodo(int estado[]){
-
-    accion = "";
-    coste = 0;
-    this->estado[] = estado[];
+nodo::nodo() {
+    costo = profundidad = posX = posY = costoAux = 0;
+    flor = false;
     padre = NULL;
 }
 
-Nodo::Nodo(Nodo nodo, string accion){
-
-    this->accion = accion;
-    coste = nodo.getCoste();
-    estado[];//determinarEstado(nodo.getEstado(), accion);
-    padre = nodo;
+bool nodo::operator <(const nodo& B) const{
+    return costo > B.costo;
 }
 
-int Nodo::getCoste() {
-    return coste;
+nodo nodo::operator = (const nodo &B){
+    this->posX = B.posX;
+    this->posY = B.posY;
+    this->padre = B.padre;
+    this->profundidad = B.profundidad;
+    this->costoAux = B.costoAux;
+    this->costo = B.costo;
+    this->flor = B.flor;
 }
 
-int Nodo::getEstado(){
-    return punteroEstado;
-}
-
-void Nodo::determinarEstado(int estado[], string accion){
-
-    if (accion) {
-
-    } else if(){
-
-    } else if(){
-
-    } else if(){
-
-    }
-}
