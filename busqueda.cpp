@@ -1,3 +1,9 @@
+/*
+* CARLOS FELIPE MONTOYA - 1535038
+* DIANA MELISSA MILLARES - 1526062
+* VICTOR HUGO ORTEGA - 1532342
+*/
+
 #include "busqueda.h"
 
 busqueda::busqueda(int filas, int columnas, vector< vector<int> > tablero, int xInicial, int yInicial, int xFinal, int yFinal){

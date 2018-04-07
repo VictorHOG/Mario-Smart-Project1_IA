@@ -1,15 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/* 
- * File:   nodo.h
- * Author: invitado
- *
- * Created on 5 de abril de 2018, 06:19 PM
- */
+* CARLOS FELIPE MONTOYA - 1535038
+* DIANA MELISSA MILLARES - 1526062
+* VICTOR HUGO ORTEGA - 1532342
+*/
 
 #ifndef NODO_H
 #define NODO_H
