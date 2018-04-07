@@ -119,12 +119,9 @@ void MainWindow::on_bttArchivo_clicked() {
                 QMessageBox::information(NULL, tr("Path"), tr("No se seleccionó ningún archivo"));
             } else {
                 QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
-                QTime myTimer;
-                myTimer.start();
                 camino = buscar.amplitud();                
                 Interfaz *interfazMario = new Interfaz(camino, tablero);
                 interfazMario->show();
-                //int tiempoTotal = myTimer.elapsed();
                 QMessageBox::information(NULL, tr("Amplitud"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)
@@ -134,13 +131,10 @@ void MainWindow::on_bttArchivo_clicked() {
             if(path.length() == 0) {
                 QMessageBox::information(NULL, tr("Path"), tr("No se seleccionó ningún archivo"));
             } else {
-                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
-                QTime myTimer;
-                myTimer.start();
+                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);                
                 camino = buscar.costoUniforme();
                 Interfaz *interfazMario = new Interfaz(camino, tablero);
                 interfazMario->show();
-                int tiempoTotal = myTimer.elapsed();
                 QMessageBox::information(NULL, tr("Costo Uniforme"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)
@@ -150,13 +144,10 @@ void MainWindow::on_bttArchivo_clicked() {
             if(path.length() == 0) {
                 QMessageBox::information(NULL, tr("Path"), tr("No se seleccionó ningún archivo"));
             } else {
-                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
-                QTime myTimer;
-                myTimer.start();
+                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);               
                 camino = buscar.profundidad();
                 Interfaz *interfazMario = new Interfaz(camino, tablero);
                 interfazMario->show();
-                int tiempoTotal = myTimer.elapsed();
                 QMessageBox::information(NULL, tr("Profundidad evitando ciclos"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)
@@ -168,13 +159,10 @@ void MainWindow::on_bttArchivo_clicked() {
             if(path.length() == 0) {
                 QMessageBox::information(NULL, tr("Path"), tr("No se seleccionó ningún archivo"));
             } else {
-                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
-                QTime myTimer;
-                myTimer.start();
+                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);                
                 camino = buscar.avara();
                 Interfaz *interfazMario = new Interfaz(camino, tablero);
                 interfazMario->show();
-                int tiempoTotal = myTimer.elapsed();
                 QMessageBox::information(NULL, tr("Profundidad evitando ciclos"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)
@@ -184,13 +172,10 @@ void MainWindow::on_bttArchivo_clicked() {
             if(path.length() == 0) {
                 QMessageBox::information(NULL, tr("Path"), tr("No se seleccionó ningún archivo"));
             } else {
-                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
-                QTime myTimer;
-                myTimer.start();
+                QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);                
                 camino = buscar.aEstrella();
                 Interfaz *interfazMario = new Interfaz(camino, tablero);
                 interfazMario->show();
-                int tiempoTotal = myTimer.elapsed();
                 QMessageBox::information(NULL, tr("Profundidad evitando ciclos"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)
