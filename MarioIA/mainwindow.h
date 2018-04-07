@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +17,7 @@ class MainWindow : public QMainWindow {
 public:    
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();    
+    vector< vector<int> > leerArchivo(QString filePath);
 
 private slots:   
     void on_bttCancelar_clicked();

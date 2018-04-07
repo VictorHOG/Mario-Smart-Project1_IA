@@ -26,11 +26,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    interfaz.cpp
+    interfaz.cpp \
+    itemmario.cpp \
+    busqueda.cpp \
+    nodo.cpp
 
 HEADERS += \
         mainwindow.h \
-    interfaz.h
+    interfaz.h \
+    itemmario.h \
+    busqueda.h \
+    nodo.h
 
 FORMS += \
         mainwindow.ui
