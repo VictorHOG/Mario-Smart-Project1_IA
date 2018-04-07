@@ -10,7 +10,7 @@ bool nodo::operator <(const nodo& B) const{
     return costo > B.costo;
 }
 
-nodo nodo::operator = (const nodo &B){
+nodo nodo::operator =(const nodo &B){
     this->posX = B.posX;
     this->posY = B.posY;
     this->padre = B.padre;
@@ -18,5 +18,7 @@ nodo nodo::operator = (const nodo &B){
     this->costoAux = B.costoAux;
     this->costo = B.costo;
     this->flor = B.flor;
+
+    return B;
 }
 

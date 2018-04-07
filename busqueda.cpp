@@ -8,8 +8,26 @@ busqueda::busqueda(int filas, int columnas, vector< vector<int> > tablero, int x
     this->yInicial = yInicial;
     this->xFinal = xFinal;
     this->yFinal = yFinal;
+    nodosExpandidos = 0;
+    profundidadDelArbol = 0;
+    tiempoTotal = 0.0;
     nodosVisitados.assign(filas,vector<int>(columnas,0));
     camino.clear();
+}
+
+uint64 busqueda::getTimeMs64(){
+    FILETIME ft;
+    LARGE_INTEGER li;
+
+    GetSystemTimeAsFileTime(&ft);
+    li.LowPart = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+
+    uint64 ret = li.QuadPart;
+    ret -= 116444736000000000LL;
+    ret /= 10000;
+
+    return ret;
 }
 
 void busqueda::obtenerCamino(nodo * nodoCamino){
@@ -59,8 +77,7 @@ nodo busqueda::expandirNoInformada(int xNodo, int yNodo, nodo aExpandir){
 
 vector< pair<pair<int,int>,int> > busqueda::amplitud(){
     camino.clear();
-    clock_t tiempo = clock();
-    int nodosExpandidos, profundidadDelArbol;
+    uint64 tiempo = getTimeMs64();
     nodosExpandidos = profundidadDelArbol = 0;
     nodo inicial;
     inicial.posX = xInicial;
@@ -109,12 +126,7 @@ vector< pair<pair<int,int>,int> > busqueda::amplitud(){
             nodosExpandidos++;
         }
     }
-    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
-    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
-    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
     if(cola.size() > 0){
-        printf("La princesa fue rescatada, el costo de la solucion es %d\n", cola.front().costo);
-        printf("La solución al camino fue:\n");
         obtenerCamino(&cola.front());
         while(!cola.empty()) cola.pop();
     }else{
@@ -126,8 +138,7 @@ vector< pair<pair<int,int>,int> > busqueda::amplitud(){
 
 vector< pair<pair<int,int>,int> > busqueda::profundidad(){
     camino.clear();
-    clock_t tiempo = clock();
-    int nodosExpandidos, profundidadDelArbol;
+    uint64 tiempo = getTimeMs64();
     nodosExpandidos = profundidadDelArbol = 0;
     nodo inicial;
     inicial.posX = xInicial;
@@ -176,12 +187,8 @@ vector< pair<pair<int,int>,int> > busqueda::profundidad(){
             nodosExpandidos++;
         }
     }
-    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
-    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
-    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    //printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
     if(pila.size() > 0){
-        printf("La princesa fue rescatada, el costo de la solucion es %d\n", pila.top().costo);
-        printf("La solución al camino fue:\n");
         obtenerCamino(&pila.top());
         while(!pila.empty()) pila.pop();
     }else{
@@ -193,8 +200,7 @@ vector< pair<pair<int,int>,int> > busqueda::profundidad(){
 
 vector< pair<pair<int,int>,int> > busqueda::costoUniforme(){
     camino.clear();
-    clock_t tiempo = clock();
-    int nodosExpandidos, profundidadDelArbol;
+    uint64 tiempo = getTimeMs64();
     nodosExpandidos = profundidadDelArbol = 0;
     nodo inicial;
     inicial.posX = xInicial;
@@ -243,12 +249,13 @@ vector< pair<pair<int,int>,int> > busqueda::costoUniforme(){
             nodosExpandidos++;
         }
     }
-    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
-    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
-    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    tiempoTotal = ((double)getTimeMs64() - tiempo)/10000;
+    cout << setprecision(20);
+    cout << fixed;
+    cout << "El tiempo de ejecucion es : " << tiempoTotal << endl;
+    cout << "El tiempo actual es : " << getTimeMs64() << endl;
+    cout << "El tiempo antes de ejecucin es : " << tiempo << endl;
     if(colaDePrioridad.size() > 0){
-        printf("La princesa fue rescatada, el costo de la solucion es %d\n", colaDePrioridad.top().costo);
-        printf("La solución al camino fue:\n");
         nodo solucion = colaDePrioridad.top();
         obtenerCamino(&solucion);
         while(!colaDePrioridad.empty()) colaDePrioridad.pop();
@@ -261,8 +268,7 @@ vector< pair<pair<int,int>,int> > busqueda::costoUniforme(){
 
 vector< pair<pair<int,int>,int> > busqueda::avara(){
     camino.clear();
-    clock_t tiempo = clock();
-    int nodosExpandidos, profundidadDelArbol;
+    uint64 tiempo = getTimeMs64();
     nodosExpandidos = profundidadDelArbol = 0;
     nodo inicial;
     inicial.posX = xInicial;
@@ -315,12 +321,8 @@ vector< pair<pair<int,int>,int> > busqueda::avara(){
             nodosExpandidos++;
         }
     }
-    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
-    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
-    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    //printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
     if(colaDePrioridad.size() > 0){
-        printf("La princesa fue rescatada, el costo de la solucion es %d\n", colaDePrioridad.top().costoAux);
-        printf("La solución al camino fue:\n");
         nodo solucion = colaDePrioridad.top();
         obtenerCamino(&solucion);
         while(!colaDePrioridad.empty()) colaDePrioridad.pop();
@@ -333,8 +335,7 @@ vector< pair<pair<int,int>,int> > busqueda::avara(){
 
 vector< pair<pair<int,int>,int> > busqueda::aEstrella(){
     camino.clear();
-    clock_t tiempo = clock();
-    int nodosExpandidos, profundidadDelArbol;
+    uint64 tiempo = getTimeMs64();
     nodosExpandidos = profundidadDelArbol = 0;
     nodo inicial;
     inicial.posX = xInicial;
@@ -348,8 +349,6 @@ vector< pair<pair<int,int>,int> > busqueda::aEstrella(){
         int xNodo, yNodo;
         xNodo = aExpandir.posX;
         yNodo = aExpandir.posY;
-        printf("ESTOY EN EL NODO %d %d CON PESO %d PESO AUX %d MI PADRE ES %d %d\n", xNodo, yNodo, aExpandir.costo, aExpandir.costoAux, 
-                aExpandir.padre != NULL ? aExpandir.padre->posX : 0, aExpandir.padre != NULL ? aExpandir.padre->posY : 0);
         if(tablero[xNodo][yNodo] == PEACH){
             break;
         }
@@ -388,12 +387,13 @@ vector< pair<pair<int,int>,int> > busqueda::aEstrella(){
             nodosExpandidos++;
         }
     }
-    printf("El total de nodos expandidos es: %d\n", nodosExpandidos);
-    printf("La profundidad del arbol es: %d\n", profundidadDelArbol);
-    printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
+    tiempoTotal = ((double)getTimeMs64() - tiempo)/10000;
+    cout << setprecision(20);
+    cout << fixed;
+    cout << "El tiempo de ejecucion es : " << tiempoTotal << endl;
+    cout << "El tiempo actual es : " << getTimeMs64() << endl;
+    cout << "El tiempo antes de ejecucin es : " << tiempo << endl;
     if(colaDePrioridad.size() > 0){
-        printf("La princesa fue rescatada, el costo de la solucion es %d\n", colaDePrioridad.top().costoAux);
-        printf("La solución al camino fue:\n");
         nodo solucion = colaDePrioridad.top();
         obtenerCamino(&solucion);
         while(!colaDePrioridad.empty()) colaDePrioridad.pop();

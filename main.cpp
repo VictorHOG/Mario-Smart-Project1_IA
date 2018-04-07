@@ -1,10 +1,3 @@
-/**
- * @authors
- * Melissa Millares
- * Felipe Montoya
- * Victor Hugo Ortega Gomez
- */
-
 #include "mainwindow.h"
 #include <QApplication>
 

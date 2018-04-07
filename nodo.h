@@ -25,7 +25,7 @@ public:
     bool flor;
     nodo * padre;
     bool operator < (const nodo &B) const;
-    nodo operator = (const nodo &B);
+    nodo operator =(const nodo &B);
 };
 
 #endif /* NODO_H */

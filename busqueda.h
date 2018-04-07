@@ -17,11 +17,16 @@
 #include <queue>
 #include <vector>
 #include <stack>
-#include <ctime>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
+#include <windows.h>
 #include "nodo.h"
+
 using namespace std;
+typedef long long int64;
+typedef unsigned long long uint64;
 #define MURO 1
 #define MARIO 2
 #define FLOR 3
@@ -42,7 +47,11 @@ public:
     int yInicial;
     int xFinal;
     int yFinal;
+    int nodosExpandidos;
+    int profundidadDelArbol;
+    double tiempoTotal;
     busqueda(int filas, int columnas, vector< vector<int> > tablero, int xInicial, int yInicial, int xFinal, int yFina);
+    uint64 getTimeMs64();
     void obtenerCamino(nodo * nodoCamino);
     nodo expandirInformada(int xNodo, int yNodo, nodo aExpandir);
     nodo expandirNoInformada(int xNodo, int yNodo, nodo aExpandir);
