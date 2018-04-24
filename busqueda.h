@@ -48,6 +48,7 @@ public:
     void obtenerCamino(nodo * nodoCamino);
     nodo expandirInformada(int xNodo, int yNodo, nodo aExpandir);
     nodo expandirNoInformada(int xNodo, int yNodo, nodo aExpandir);
+    bool visitado(int xNodo, int yNodo, nodo * aExpandir, bool flor);
     vector< pair<pair<int,int>,int> > amplitud();
     vector< pair<pair<int,int>,int> > profundidad();
     vector< pair<pair<int,int>,int> > costoUniforme();

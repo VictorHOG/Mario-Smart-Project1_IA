@@ -12,6 +12,7 @@
 class nodo{
 public:
     nodo();
+    int der,izq,arr,aba;
     int posX, posY;
     int costo, costoAux;
     int profundidad;

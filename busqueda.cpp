@@ -37,7 +37,7 @@ uint64 busqueda::getTimeMs64(){
 }
 
 void busqueda::obtenerCamino(nodo * nodoCamino){
-    pair< pair<int,int> , int > temp;
+    pair< pair<int,int> , int > temp; //asignar la dir al caminoS
     temp.first.first = nodoCamino->posX;
     temp.first.second = nodoCamino->posY;
     temp.second = nodoCamino->flor;
@@ -52,7 +52,7 @@ void busqueda::obtenerCamino(nodo * nodoCamino){
 }
 
 nodo busqueda::expandirInformada(int xNodo, int yNodo, nodo aExpandir){
-    nodosVisitados[xNodo][yNodo] += aExpandir.flor + 1;
+    if(tablero[xNodo][yNodo] != PEACH) nodosVisitados[xNodo][yNodo] += aExpandir.flor + 1;
     nodo hijo;
     hijo.posX = xNodo;
     hijo.posY = yNodo;
@@ -67,7 +67,7 @@ nodo busqueda::expandirInformada(int xNodo, int yNodo, nodo aExpandir){
 }
 
 nodo busqueda::expandirNoInformada(int xNodo, int yNodo, nodo aExpandir){
-    nodosVisitados[xNodo][yNodo] += aExpandir.flor + 1;
+    if(tablero[xNodo][yNodo] != PEACH) nodosVisitados[xNodo][yNodo] += aExpandir.flor + 1;
     nodo hijo;
     hijo.posX = xNodo;
     hijo.posY = yNodo;
@@ -81,6 +81,23 @@ nodo busqueda::expandirNoInformada(int xNodo, int yNodo, nodo aExpandir){
     return hijo;
 }
 
+bool busqueda::visitado(int xNodo,int yNodo, nodo * aExpandir, bool flor){
+    //printf("HOLI ESTOY EN %d %d\n", aExpandir->posX, aExpandir->posY);
+    if(aExpandir->padre == NULL){
+        if(xNodo == aExpandir->posX && yNodo == aExpandir->posY && aExpandir->flor == flor){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    if(xNodo == aExpandir->posX && yNodo == aExpandir->posY && aExpandir->flor == flor){
+        return true;
+    }else{
+        return visitado(xNodo,yNodo,aExpandir->padre, flor);
+    }
+}
+
 vector< pair<pair<int,int>,int> > busqueda::amplitud(){
     camino.clear();
     uint64 tiempo = getTimeMs64();
@@ -91,6 +108,7 @@ vector< pair<pair<int,int>,int> > busqueda::amplitud(){
     cola.push(inicial);
     nodosVisitados[xInicial][yInicial] = 1;
     nodosExpandidos++;
+    int soluciones = 0;
     while(!cola.empty()){
         nodo aExpandir = cola.front();
         profundidadDelArbol = max(profundidadDelArbol,aExpandir.profundidad);
@@ -106,26 +124,30 @@ vector< pair<pair<int,int>,int> > busqueda::amplitud(){
         }
         
         cola.pop();
+
         if(xNodo-1 >= 0 && tablero[xNodo-1][yNodo] != MURO && nodosVisitados[xNodo-1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo-1][yNodo] != 3){
+            if(tablero[xNodo-1][yNodo] == PEACH) soluciones++;
             nodo hijo;
             hijo = expandirInformada(xNodo-1,yNodo,aExpandir);
             cola.push(hijo);
             nodosExpandidos++;
         }
-        
-        if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  && nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
+        if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO && nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
+            if(tablero[xNodo+1][yNodo] == PEACH) soluciones++;
             nodo hijo;
             hijo = expandirInformada(xNodo+1,yNodo,aExpandir);
             cola.push(hijo);
             nodosExpandidos++;
         }
-        if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  && nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
+        if(yNodo-1 >= 0 && tablero[xNodo][yNodo-1] != MURO && nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
+            if(tablero[xNodo][yNodo-1] == PEACH) soluciones++;
             nodo hijo;
             hijo = expandirInformada(xNodo,yNodo-1,aExpandir);
             cola.push(hijo);
             nodosExpandidos++;
         }
-        if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  && nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
+        if(yNodo+1 < columnas && tablero[xNodo][yNodo+1] != MURO && nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
+            if(tablero[xNodo][yNodo+1] == PEACH) soluciones++;
             nodo hijo;
             hijo = expandirInformada(xNodo,yNodo+1,aExpandir);
             cola.push(hijo);
@@ -134,9 +156,10 @@ vector< pair<pair<int,int>,int> > busqueda::amplitud(){
     }
     if(cola.size() > 0){
         obtenerCamino(&cola.front());
+        cout << "Cantidad de soluciones " << soluciones << endl;
         while(!cola.empty()) cola.pop();
     }else{
-        printf("La princesa no fue rescatada\n");
+        cout << "La princesa no fue rescatada" << endl;
     }
     nodosVisitados.assign(filas,vector<int>(columnas,0));
     return camino;
@@ -172,6 +195,7 @@ vector< pair<pair<int,int>,int> > busqueda::profundidad(){
             hijo = expandirInformada(xNodo-1,yNodo,aExpandir);
             pila.push(hijo);
             nodosExpandidos++;
+            hijo.izq++;
         }
         
         if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  && nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
@@ -179,18 +203,21 @@ vector< pair<pair<int,int>,int> > busqueda::profundidad(){
             hijo = expandirInformada(xNodo+1,yNodo,aExpandir);
             pila.push(hijo);
             nodosExpandidos++;
+            hijo.der++;
         }
         if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  && nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
             nodo hijo;
             hijo = expandirInformada(xNodo,yNodo-1,aExpandir);
             pila.push(hijo);
             nodosExpandidos++;
+            hijo.aba++;
         }
         if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  && nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
             nodo hijo;
             hijo = expandirInformada(xNodo,yNodo+1,aExpandir);
             pila.push(hijo);
             nodosExpandidos++;
+            hijo.arr++;
         }
     }
     //printf("Tiempo total de ejecución: %.10lf\n", (double)(clock() - tiempo)/CLOCKS_PER_SEC);
@@ -279,6 +306,9 @@ vector< pair<pair<int,int>,int> > busqueda::avara(){
     nodo inicial;
     inicial.posX = xInicial;
     inicial.posY = yInicial;
+    int posTortugax=0;
+    int posTortugay=0;
+    int contador =0;
     colaDePrioridad.push(inicial);
     nodosVisitados[xInicial][yInicial] = 1;
     nodosExpandidos++;
@@ -295,12 +325,33 @@ vector< pair<pair<int,int>,int> > busqueda::avara(){
         if(tablero[xNodo][yNodo] == FLOR){
             aExpandir.flor = true;
         }
+     /*   if (tablero[xNodo][yNodo] == TORTUGA && contador==0){
+            posTortugax = xNodo;
+            posTortugay = yNodo;
+            contador++;
+        }*/
+
+        for (int i = 0; i < filas; ++i) {
+            for (int j = 0; j < columnas; ++j) {
+                if (tablero[i][j] == TORTUGA && contador==0){
+                    posTortugax = i;
+                    posTortugay = j;
+                    contador++;
+
+                }
+            }
+        }
+
+        cout << "tortuga pos x" << posTortugax << "  pos y  " << posTortugay<< endl;
         
         colaDePrioridad.pop();
         if(xNodo-1 >= 0 && tablero[xNodo-1][yNodo] != MURO && nodosVisitados[xNodo-1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo-1][yNodo] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo-1,yNodo,aExpandir);
-            hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal);
+          //  hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal);
+            hijo.costo = abs((xNodo-1) - posTortugax) + abs(yNodo - posTortugay);
+            cout << "posición mario     posx: " << xNodo-1 << "posy: " <<  yNodo << endl;
+            cout << "heuristica:    "  << hijo.costo<< endl;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
@@ -308,21 +359,30 @@ vector< pair<pair<int,int>,int> > busqueda::avara(){
         if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  && nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo+1,yNodo,aExpandir);
-            hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal);
+          //  hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal);
+            hijo.costo = abs((xNodo+1) - posTortugax) + abs(yNodo - posTortugay);
+            cout << "posición mario     posx: " << xNodo+1 << "posy: " <<  yNodo << endl;
+            cout << "heuristica:    "  << hijo.costo<< endl;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
         if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  && nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo,yNodo-1,aExpandir);
-            hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal);
+          //  hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal);
+            hijo.costo = abs(xNodo - posTortugax) + abs((yNodo-1) - posTortugay);
+            cout << "posición mario     posx: " << xNodo << "posy: " <<  yNodo-1 << endl;
+            cout << "heuristica:    "  << hijo.costo<< endl;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
         if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  && nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo,yNodo+1,aExpandir);
-            hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal);
+         //   hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal);
+            hijo.costo = abs(xNodo - posTortugax) + abs((yNodo+1) - posTortugay);
+            cout << "posición mario     posx: " << xNodo << "posy: " <<  yNodo+1 << endl;
+            cout << "heuristica:    "  << hijo.costo<< endl;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
@@ -366,7 +426,7 @@ vector< pair<pair<int,int>,int> > busqueda::aEstrella(){
         if(xNodo-1 >= 0 && tablero[xNodo-1][yNodo] != MURO && nodosVisitados[xNodo-1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo-1][yNodo] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo-1,yNodo,aExpandir);
-            hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal) + aExpandir.costoAux;
+            hijo.costo = abs((xNodo-1) - xFinal) + abs(yNodo - yFinal) + hijo.costoAux;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
@@ -374,21 +434,21 @@ vector< pair<pair<int,int>,int> > busqueda::aEstrella(){
         if(xNodo+1 < filas && tablero[xNodo+1][yNodo] != MURO  && nodosVisitados[xNodo+1][yNodo] != aExpandir.flor + 1 && nodosVisitados[xNodo+1][yNodo] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo+1,yNodo,aExpandir);
-            hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal) + aExpandir.costoAux;
+            hijo.costo = abs((xNodo+1) - xFinal) + abs(yNodo - yFinal) + hijo.costoAux;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
         if(yNodo - 1 >= 0 && tablero[xNodo][yNodo-1] != MURO  && nodosVisitados[xNodo][yNodo-1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo-1] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo,yNodo-1,aExpandir);
-            hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal) + aExpandir.costoAux;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo-1) - yFinal) + hijo.costoAux;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }
         if(yNodo + 1 < columnas && tablero[xNodo][yNodo+1] != MURO  && nodosVisitados[xNodo][yNodo+1] != aExpandir.flor + 1 && nodosVisitados[xNodo][yNodo+1] != 3){
             nodo hijo;
             hijo = expandirNoInformada(xNodo,yNodo+1,aExpandir);
-            hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal) + aExpandir.costoAux;
+            hijo.costo = abs(xNodo - xFinal) + abs((yNodo+1) - yFinal) + hijo.costoAux;
             colaDePrioridad.push(hijo);
             nodosExpandidos++;
         }

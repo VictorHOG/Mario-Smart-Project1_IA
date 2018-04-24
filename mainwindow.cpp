@@ -126,8 +126,10 @@ void MainWindow::on_bttArchivo_clicked() {
             } else {
                 QMessageBox::information(NULL, tr("Path"), tr("Se seleccionó ") + path);
                 camino = buscar.amplitud();                
-                Interfaz *interfazMario = new Interfaz(camino, tablero);
-                interfazMario->show();
+                if(camino.size() > 0){
+                    Interfaz *interfazMario = new Interfaz(camino, tablero);
+                    interfazMario->show();
+                }
                 QMessageBox::information(NULL, tr("Amplitud"),
                                          tr("Nodos expandidos: ")+QString::number(buscar.nodosExpandidos)
                                          +tr("\n")+tr("Profundidad del árbol: ")+QString::number(buscar.profundidadDelArbol)

@@ -15,6 +15,7 @@
 #include <utility>
 #include <QLayoutItem>
 #include <windows.h>
+#include <QMessageBox>
 
 #define MURO 1
 #define MARIO 2
@@ -40,22 +41,24 @@ void Interfaz::avanzar(){
     QPixmap mario("../Images/mario.png");
 
     pair<int, int> coordenada = camino[k].first;
-    int flor = camino[k].second;
+    int flor = camino[k].second; //se asigna el segundo valor a flor
     QLabel *imgMario = new QLabel(this);
     QLabel *imgNull = new QLabel(this);
-    if(flor){
+    if(flor){ //si hay flor
         imgMario->setPixmap(marioFlor);
     }else{
         imgMario->setPixmap(mario);
     }
     imgMario->setVisible(true);
     imgNull->setVisible(true);
-
+    //quitar el item por donde pasa Mario
     QLayoutItem *item = layout->itemAtPosition(coordenada.first, coordenada.second);
+    //cout<<coordenada.first<<","<<coordenada.second<<"; ";
     layout->removeItem(item);
     item->widget()->setVisible(false);
 
     QLayoutItem *itemAnterior = layout->itemAtPosition(coordAnterior.first, coordAnterior.second);
+    //cout<<coordAnterior.first<<","<<coordAnterior.second<<"; ";
     layout->removeItem(itemAnterior);
     itemAnterior->widget()->setVisible(false);
 
@@ -64,9 +67,22 @@ void Interfaz::avanzar(){
     imgMario->setVisible(true);
     layout->addWidget(imgMario, coordenada.first, coordenada.second, Qt::AlignHCenter);
 
-    coordAnterior = coordenada;
+    coordAnterior = coordenada;    
+
     k++;
     update();
+
+    /** //mensaje si hay flor
+       if(camino[k].second == 1){
+           QMessageBox::information(NULL,tr("¿Hay flor?"),tr("¡Flor!"));
+           return;
+       }
+   //fin **/
+    /**
+    if(camino[k].first.first == 0 && camino[k].first.second == 8){
+        QMessageBox::information(NULL,tr("¿Posición (0,8)?"),tr("Pasa la posicion (0,8)"));
+        return;
+    }**/
 }
 
 void Interfaz::dibujarTablero(vector< pair< pair<int, int>, int> > camino,
@@ -139,10 +155,62 @@ void Interfaz::dibujarTablero(vector< pair< pair<int, int>, int> > camino,
                 imgNull->setVisible(true);
             }
         }
-    }    
+    }
+
+    //si en la casilla antes de la meta hay tortuga
+    pair<int, int> coordPrueba;
+    /** for(int l = 0; l < camino.size(); l++) {
+        coordPrueba = camino[l-1].first;
+    }
+    if(tablero[coordPrueba.first][coordPrueba.second] == 4) {
+        //cout<<"tortuga";
+        QMessageBox::information(NULL,tr("¿Hay tortuga?"),tr("¡Tortuga!"));
+    }
+    //fin
+
+    //# de tortugas en el camino
+    int numTortuga = 0;
+    for(int l = 0; l < camino.size(); l++) {
+            coordPrueba = camino[l].first;
+            if(tablero[coordPrueba.first][coordPrueba.second] == 4){
+                numTortuga++;
+            }
+    }
+    cout<<"# tortugas "<<numTortuga;
+    //fin **/
 
     coordAnterior = camino[0].first;
 
-    this->setLayout(layout);
+    /** //veces que va a der, izq, aba, arr
+    int arr, aba, izq, der;
+        arr=aba=izq=der=0;
+        for(int m=0;m<camino.size();m++){
+        //arriba
+        if(camino[m].first.first-1 == camino[m+1].first.first
+                && camino[m].first.second == camino[m+1].first.second){
+            arr++;            
+        }
+        //abajo
+        if(camino[m].first.first+1 == camino[m+1].first.first
+                  && camino[m].first.second == camino[m+1].first.second){
+            aba++;
+        }
+        //izquierda
+        if(camino[m].first.first == camino[m+1].first.first
+                  && camino[m].first.second-1 == camino[m+1].first.second){
+            izq++;
+        }
+        //derecha
+        if(camino[m].first.first == camino[m+1].first.first
+                  && camino[m].first.second+1 == camino[m+1].first.second){
+            der++;
+        }
+    }
+    QMessageBox::information(NULL,tr("direcciones"),tr("Arriba ")+QString::number(arr)+tr("\n")+
+                             tr("Abajo ")+QString::number(aba)+tr("\n")+
+                             tr("Derecha ")+QString::number(der)+tr("\n")+
+                             tr("Izquierda ")+QString::number(izq)+tr("\n"));
+    //fin **/
 
+    this->setLayout(layout);
 }

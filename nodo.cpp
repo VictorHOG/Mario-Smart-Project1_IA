@@ -8,6 +8,7 @@
 
 nodo::nodo() {
     costo = profundidad = posX = posY = costoAux = 0;
+    der=arr=aba=izq=0;
     flor = false;
     padre = NULL;
 }
